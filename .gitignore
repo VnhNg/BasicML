@@ -1,5 +1,5 @@
-# Ignore checkpoint files
-checkpoint
+# Ignore Jupyter notebook checkpoint files
+*-checkpoint.ipynb
 
 # Ignore Python bytecode files
 *.pyc
