@@ -25,9 +25,10 @@ class SoftmaxRegression:
         return self
     
     def fit(self, X, y):
+        X = np.array(X)
         y = np.array(y)
         n, m = X.shape  # n: number of observations, m: number of features
-        self.classes_, self.number_by_class = np.unique(y, return_counts=True)
+        self.classes_, self.number_by_class_ = np.unique(y, return_counts=True)
         k = len(self.classes_) # k: number of classes
         
         X_b = np.c_[X, np.ones((n, 1))]  # Add intercept term (X_b includes a column of ones for the intercept)
@@ -55,7 +56,7 @@ class SoftmaxRegression:
             
             # Update weights
             gradient = (1/n) * X_b.T.dot(prob - y_ohc) # Compute gradient
-            balanced_gradient = gradient * n/(k*self.number_by_class + 0.1) # Balance out 
+            balanced_gradient = gradient * n/(k*self.number_by_class_ + 0.1) # Balance out 
             W -= self.lrate * balanced_gradient        
             W[:-1,:] -= self.lrate * (self.L2/n) * W[:-1, :] # Add L2 regularization            
             W[:-1,:] = np.sign(W[:-1,:]) * np.maximum(0, np.abs(W[:-1,:]) - self.lrate * self.L1/n) # Add L1 regularization
@@ -74,11 +75,13 @@ class SoftmaxRegression:
         print(f"best loss {best_loss} at epoch {best_epoch}")
         
     def predict(self, X):
+        X = np.array(X)
         probabilities = softmax(np.dot(X, self.coef) + self.intercept)  # Get probabilities from softmax    
         predicted_class_idx = np.argmax(probabilities, axis=1) # Get the class index with the maximum probability
         predicted_class = self.classes_[predicted_class_idx] # Map the class index to the class label
         return predicted_class
     
     def predict_proba(self, X):
+        X = np.array(X)
         return softmax(np.dot(X, self.coef) + self.intercept)
          
